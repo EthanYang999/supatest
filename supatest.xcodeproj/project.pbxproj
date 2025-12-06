@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		DB8D3B782EE3291300C4F276 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = DB8D3B772EE3291300C4F276 /* Supabase */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		DB3EC5612EE2B0E900382F43 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB8D3B782EE3291300C4F276 /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 				DB3EC5552EE2B0E600382F43 /* supatest */,
 				DB3EC5632EE2B0E900382F43 /* supatestTests */,
 				DB3EC56D2EE2B0E900382F43 /* supatestUITests */,
+				DB8D3B752EE328C700C4F276 /* Frameworks */,
 				DB3EC5542EE2B0E600382F43 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +96,13 @@
 				DB3EC56A2EE2B0E900382F43 /* supatestUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		DB8D3B752EE328C700C4F276 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +125,7 @@
 			);
 			name = supatest;
 			packageProductDependencies = (
+				DB8D3B772EE3291300C4F276 /* Supabase */,
 			);
 			productName = supatest;
 			productReference = DB3EC5532EE2B0E600382F43 /* supatest.app */;
@@ -195,6 +209,9 @@
 			);
 			mainGroup = DB3EC54A2EE2B0E600382F43;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				DB8D3B762EE3291300C4F276 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DB3EC5542EE2B0E600382F43 /* Products */;
 			projectDirPath = "";
@@ -615,6 +632,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DB8D3B762EE3291300C4F276 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DB8D3B772EE3291300C4F276 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB8D3B762EE3291300C4F276 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DB3EC54B2EE2B0E600382F43 /* Project object */;
 }
