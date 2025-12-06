@@ -24,11 +24,25 @@ enum ApocalypseTheme {
     /// 次要文字颜色
     static let secondaryText = Color(hex: "A0A0A0")
 
+    /// 次要文字颜色（别名）
+    static let textSecondary = secondaryText
+
     /// 卡片背景
     static let cardBackground = Color(hex: "2A2A3E")
 
     /// 分割线
     static let separator = Color(hex: "3A3A4E")
+
+    // MARK: - Status Colors
+
+    /// 成功色：绿色
+    static let success = Color(hex: "4CAF50")
+
+    /// 危险色：红色
+    static let danger = Color(hex: "E53935")
+
+    /// 警告色：黄色
+    static let warning = Color(hex: "FFC107")
 }
 
 // MARK: - Color Extension for Hex Support

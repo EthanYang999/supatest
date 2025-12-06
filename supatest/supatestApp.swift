@@ -9,6 +9,8 @@ import SwiftUI
 
 @main
 struct supatestApp: App {
+    /// 认证管理器
+    @StateObject private var authManager = AuthManager.shared
 
     init() {
         configureAppearance()
@@ -16,7 +18,8 @@ struct supatestApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
+                .environmentObject(authManager)
         }
     }
 
@@ -56,5 +59,31 @@ struct supatestApp: App {
         UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
         UINavigationBar.appearance().compactAppearance = navBarAppearance
         UINavigationBar.appearance().tintColor = .apocalypsePrimary
+    }
+}
+
+// MARK: - 根视图
+
+/// 根视图：根据认证状态显示不同页面
+struct RootView: View {
+    @EnvironmentObject var authManager: AuthManager
+
+    var body: some View {
+        Group {
+            if !authManager.isInitialized {
+                // 启动画面：检查会话中
+                SplashView(authManager: authManager)
+            } else if authManager.isAuthenticated {
+                // 已登录：显示主界面
+                ContentView()
+                    .transition(.opacity)
+            } else {
+                // 未登录：显示认证页面
+                AuthView()
+                    .transition(.opacity)
+            }
+        }
+        .animation(.easeInOut(duration: 0.3), value: authManager.isAuthenticated)
+        .animation(.easeInOut(duration: 0.3), value: authManager.isInitialized)
     }
 }
