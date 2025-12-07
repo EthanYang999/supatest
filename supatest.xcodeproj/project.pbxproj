@@ -217,11 +217,12 @@
 				};
 			};
 			buildConfigurationList = DB3EC54E2EE2B0E600382F43 /* Build configuration list for PBXProject "supatest" */;
-			developmentRegion = en;
+			developmentRegion = "zh-Hans";
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = DB3EC54A2EE2B0E600382F43;
 			minimizedProjectReferenceProxies = 1;

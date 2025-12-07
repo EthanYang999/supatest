@@ -119,7 +119,7 @@ struct ProfileTabView: View {
                     }
 
                     // 输入框
-                    TextField("", text: $deleteConfirmText, prompt: Text("输入 DELETE").foregroundColor(ApocalypseTheme.textSecondary))
+                    TextField(text: $deleteConfirmText, prompt: Text("输入 DELETE").foregroundColor(ApocalypseTheme.textSecondary)) {}
                         .textInputAutocapitalization(.characters)
                         .autocorrectionDisabled()
                         .padding()
@@ -272,7 +272,7 @@ struct ProfileTabView: View {
         }
     }
 
-    private func statCard(icon: String, title: String, value: String) -> some View {
+    private func statCard(icon: String, title: LocalizedStringKey, value: String) -> some View {
         VStack(spacing: 8) {
             Image(systemName: icon)
                 .font(.title2)
@@ -339,7 +339,7 @@ struct ProfileTabView: View {
         }
     }
 
-    private func settingsRow(icon: String, title: String, showArrow: Bool, action: @escaping () -> Void) -> some View {
+    private func settingsRow(icon: String, title: LocalizedStringKey, showArrow: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack {
                 Image(systemName: icon)

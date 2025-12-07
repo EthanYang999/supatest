@@ -238,7 +238,7 @@ struct SettingsView: View {
                     }
 
                     // 输入框
-                    TextField("", text: $deleteConfirmText, prompt: Text("输入 DELETE").foregroundColor(ApocalypseTheme.textSecondary))
+                    TextField(text: $deleteConfirmText, prompt: Text("输入 DELETE").foregroundColor(ApocalypseTheme.textSecondary)) {}
                         .textInputAutocapitalization(.characters)
                         .autocorrectionDisabled()
                         .padding()

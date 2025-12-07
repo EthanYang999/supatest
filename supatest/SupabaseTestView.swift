@@ -16,7 +16,7 @@ let supabase = SupabaseClient(
 
 struct SupabaseTestView: View {
     @State private var connectionStatus: ConnectionStatus = .idle
-    @State private var logText: String = "点击按钮开始测试连接..."
+    @State private var logText: String = String(localized: "点击按钮开始测试连接...")
     @State private var isTesting: Bool = false
 
     enum ConnectionStatus {
@@ -99,11 +99,11 @@ struct SupabaseTestView: View {
     private var statusTitle: String {
         switch connectionStatus {
         case .idle:
-            return "等待测试"
+            return String(localized: "等待测试")
         case .success:
-            return "连接成功"
+            return String(localized: "连接成功")
         case .failure:
-            return "连接失败"
+            return String(localized: "连接失败")
         }
     }
 

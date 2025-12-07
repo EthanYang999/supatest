@@ -261,7 +261,7 @@ struct AuthView: View {
                               : Color.white.opacity(0.3))
                         .frame(width: 24, height: 24)
                         .overlay(
-                            Text("\(step.rawValue)")
+                            Text(verbatim: "\(step.rawValue)")
                                 .font(.caption)
                                 .fontWeight(.bold)
                                 .foregroundColor(.white)
@@ -326,7 +326,7 @@ struct AuthView: View {
 
             // 重发倒计时
             if resendCountdown > 0 {
-                Text("\(resendCountdown)秒后可重新发送")
+                Text("\(resendCountdown)秒后可重新发送", tableName: nil, bundle: .main, comment: "")
                     .font(.caption)
                     .foregroundColor(ApocalypseTheme.textSecondary)
             } else {
@@ -554,7 +554,7 @@ struct AuthView: View {
 
             // 重发倒计时
             if resendCountdown > 0 {
-                Text("\(resendCountdown)秒后可重新发送")
+                Text("\(resendCountdown)秒后可重新发送", tableName: nil, bundle: .main, comment: "")
                     .font(.caption)
                     .foregroundColor(ApocalypseTheme.textSecondary)
             } else {
@@ -730,7 +730,7 @@ struct CustomTextField: View {
                 .foregroundColor(ApocalypseTheme.textSecondary)
                 .frame(width: 20)
 
-            TextField("", text: $text, prompt: Text(placeholder).foregroundColor(ApocalypseTheme.textSecondary))
+            TextField(text: $text, prompt: Text(placeholder).foregroundColor(ApocalypseTheme.textSecondary)) {}
                 .foregroundColor(ApocalypseTheme.text)
                 .keyboardType(keyboardType)
                 .autocapitalization(.none)
@@ -757,10 +757,10 @@ struct CustomSecureField: View {
                 .frame(width: 20)
 
             if isSecure {
-                SecureField("", text: $text, prompt: Text(placeholder).foregroundColor(ApocalypseTheme.textSecondary))
+                SecureField(text: $text, prompt: Text(placeholder).foregroundColor(ApocalypseTheme.textSecondary)) {}
                     .foregroundColor(ApocalypseTheme.text)
             } else {
-                TextField("", text: $text, prompt: Text(placeholder).foregroundColor(ApocalypseTheme.textSecondary))
+                TextField(text: $text, prompt: Text(placeholder).foregroundColor(ApocalypseTheme.textSecondary)) {}
                     .foregroundColor(ApocalypseTheme.text)
                     .autocapitalization(.none)
             }
@@ -801,7 +801,7 @@ struct OTPTextField: View {
             }
         }
         .overlay(
-            TextField("", text: $code)
+            TextField(text: $code) {}
                 .keyboardType(.numberPad)
                 .foregroundColor(.clear)
                 .accentColor(.clear)
