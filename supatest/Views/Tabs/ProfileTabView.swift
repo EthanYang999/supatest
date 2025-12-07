@@ -18,6 +18,12 @@ struct ProfileTabView: View {
     /// 显示登出中状态
     @State private var isLoggingOut = false
 
+    /// 显示删除账户确认弹窗
+    @State private var showDeleteAccountAlert = false
+
+    /// 显示删除账户中状态
+    @State private var isDeletingAccount = false
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -40,6 +46,9 @@ struct ProfileTabView: View {
                         logoutButton
                             .padding(.top, 20)
 
+                        // 删除账户按钮
+                        deleteAccountButton
+
                         Spacer(minLength: 40)
                     }
                     .padding(.horizontal, 16)
@@ -55,6 +64,14 @@ struct ProfileTabView: View {
             }
         } message: {
             Text("退出后需要重新登录才能继续游戏")
+        }
+        .alert("删除账户", isPresented: $showDeleteAccountAlert) {
+            Button("取消", role: .cancel) { }
+            Button("确认删除", role: .destructive) {
+                performDeleteAccount()
+            }
+        } message: {
+            Text("此操作将永久删除您的账户和所有数据，无法恢复。确定要继续吗？")
         }
     }
 
@@ -243,6 +260,35 @@ struct ProfileTabView: View {
         .disabled(isLoggingOut)
     }
 
+    // MARK: - 删除账户按钮
+
+    private var deleteAccountButton: some View {
+        Button(action: {
+            showDeleteAccountAlert = true
+        }) {
+            HStack {
+                if isDeletingAccount {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: ApocalypseTheme.danger))
+                        .scaleEffect(0.8)
+                } else {
+                    Image(systemName: "trash")
+                }
+                Text(isDeletingAccount ? "删除中..." : "删除账户")
+                    .fontWeight(.medium)
+            }
+            .foregroundColor(ApocalypseTheme.danger)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .background(Color.clear)
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(ApocalypseTheme.danger, lineWidth: 1)
+            )
+        }
+        .disabled(isDeletingAccount || isLoggingOut)
+    }
+
     // MARK: - 登出方法
 
     private func performLogout() {
@@ -251,6 +297,20 @@ struct ProfileTabView: View {
             await authManager.signOut()
             await MainActor.run {
                 isLoggingOut = false
+            }
+        }
+    }
+
+    // MARK: - 删除账户方法
+
+    private func performDeleteAccount() {
+        isDeletingAccount = true
+        Task {
+            await authManager.deleteAccount()
+            await MainActor.run {
+                isDeletingAccount = false
+                // 如果删除失败，错误信息会显示在 authManager.errorMessage 中
+                // 成功删除后 isAuthenticated 会变为 false，自动跳转到登录页面
             }
         }
     }

@@ -20,6 +20,14 @@ enum AuthMode: String, CaseIterable {
     case resetPassword = "找回密码"
 }
 
+// MARK: - 响应模型
+
+/// 删除账户错误响应
+private struct DeleteAccountErrorResponse: Codable {
+    let error: String
+    let details: String?
+}
+
 // MARK: - AuthManager
 
 /// 认证管理器
@@ -444,6 +452,80 @@ class AuthManager: ObservableObject {
                 errorMessage = "登录失败: \(error.localizedDescription)"
                 print("❌ 登录错误: \(error)")
             }
+        }
+
+        isLoading = false
+    }
+
+    // MARK: - 账户管理
+
+    /// 删除账户
+    /// 调用 Edge Function 删除当前用户账户
+    func deleteAccount() async {
+        isLoading = true
+        errorMessage = nil
+
+        do {
+            // 1. 获取当前会话的 accessToken
+            let session = try await supabase.auth.session
+            let accessToken = session.accessToken
+
+            // 2. 构建请求
+            let url = URL(string: "https://eyprepalhwevgoryqyqf.supabase.co/functions/v1/delete-account")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+            // 3. 发送请求
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            // 4. 检查响应状态码
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw NSError(
+                    domain: "AuthManager",
+                    code: -1,
+                    userInfo: [NSLocalizedDescriptionKey: "无效的服务器响应"]
+                )
+            }
+
+            if httpResponse.statusCode == 200 {
+                // 删除成功，重置所有认证状态
+                currentUser = nil
+                isAuthenticated = false
+                otpSent = false
+                otpVerified = false
+                needsPasswordSetup = false
+                pendingEmail = nil
+                print("✅ 账户已成功删除")
+            } else {
+                // 解析错误信息
+                if let errorResponse = try? JSONDecoder().decode(DeleteAccountErrorResponse.self, from: data) {
+                    throw NSError(
+                        domain: "AuthManager",
+                        code: httpResponse.statusCode,
+                        userInfo: [NSLocalizedDescriptionKey: errorResponse.error]
+                    )
+                } else {
+                    throw NSError(
+                        domain: "AuthManager",
+                        code: httpResponse.statusCode,
+                        userInfo: [NSLocalizedDescriptionKey: "删除账户失败，状态码: \(httpResponse.statusCode)"]
+                    )
+                }
+            }
+
+        } catch let error as NSError {
+            if error.domain == NSURLErrorDomain {
+                errorMessage = "网络连接失败，请检查网络设置"
+                print("❌ 删除账户网络错误: \(error)")
+            } else {
+                errorMessage = error.localizedDescription
+                print("❌ 删除账户失败: \(error)")
+            }
+        } catch {
+            errorMessage = "删除账户失败: \(error.localizedDescription)"
+            print("❌ 删除账户失败: \(error)")
         }
 
         isLoading = false
