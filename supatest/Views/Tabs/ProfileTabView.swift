@@ -18,44 +18,57 @@ struct ProfileTabView: View {
     /// 显示登出中状态
     @State private var isLoggingOut = false
 
-    /// 显示删除账户确认弹窗
+    /// 显示删除账户第一次确认弹窗
     @State private var showDeleteAccountAlert = false
+
+    /// 显示删除账户第二次确认弹窗（输入 DELETE）
+    @State private var showDeleteConfirmSheet = false
+
+    /// 删除确认输入文本
+    @State private var deleteConfirmText = ""
 
     /// 显示删除账户中状态
     @State private var isDeletingAccount = false
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                ApocalypseTheme.background
-                    .ignoresSafeArea()
+        ZStack {
+            NavigationStack {
+                ZStack {
+                    ApocalypseTheme.background
+                        .ignoresSafeArea()
 
-                ScrollView {
-                    VStack(spacing: 24) {
-                        // 用户信息卡片
-                        userInfoCard
-                            .padding(.top, 20)
+                    ScrollView {
+                        VStack(spacing: 24) {
+                            // 用户信息卡片
+                            userInfoCard
+                                .padding(.top, 20)
 
-                        // 统计数据
-                        statsSection
+                            // 统计数据
+                            statsSection
 
-                        // 设置选项
-                        settingsSection
+                            // 设置选项
+                            settingsSection
 
-                        // 退出登录按钮
-                        logoutButton
-                            .padding(.top, 20)
+                            // 退出登录按钮
+                            logoutButton
+                                .padding(.top, 20)
 
-                        // 删除账户按钮
-                        deleteAccountButton
+                            // 删除账户按钮
+                            deleteAccountButton
 
-                        Spacer(minLength: 40)
+                            Spacer(minLength: 40)
+                        }
+                        .padding(.horizontal, 16)
                     }
-                    .padding(.horizontal, 16)
                 }
+                .navigationTitle("个人")
+                .navigationBarTitleDisplayMode(.inline)
             }
-            .navigationTitle("个人")
-            .navigationBarTitleDisplayMode(.inline)
+
+            // 全屏加载遮罩
+            if isDeletingAccount {
+                loadingOverlay
+            }
         }
         .alert("确认退出", isPresented: $showLogoutAlert) {
             Button("取消", role: .cancel) { }
@@ -67,11 +80,112 @@ struct ProfileTabView: View {
         }
         .alert("删除账户", isPresented: $showDeleteAccountAlert) {
             Button("取消", role: .cancel) { }
-            Button("确认删除", role: .destructive) {
-                performDeleteAccount()
+            Button("继续", role: .destructive) {
+                showDeleteConfirmSheet = true
             }
         } message: {
             Text("此操作将永久删除您的账户和所有数据，无法恢复。确定要继续吗？")
+        }
+        .sheet(isPresented: $showDeleteConfirmSheet) {
+            deleteConfirmSheet
+        }
+    }
+
+    // MARK: - 删除确认弹窗
+
+    private var deleteConfirmSheet: some View {
+        NavigationStack {
+            ZStack {
+                ApocalypseTheme.background.ignoresSafeArea()
+
+                VStack(spacing: 24) {
+                    // 警告图标
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.system(size: 60))
+                        .foregroundColor(ApocalypseTheme.danger)
+                        .padding(.top, 40)
+
+                    // 警告文字
+                    VStack(spacing: 12) {
+                        Text("最终确认")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundColor(ApocalypseTheme.text)
+
+                        Text("请输入 DELETE 以确认删除账户")
+                            .font(.subheadline)
+                            .foregroundColor(ApocalypseTheme.textSecondary)
+                            .multilineTextAlignment(.center)
+                    }
+
+                    // 输入框
+                    TextField("", text: $deleteConfirmText, prompt: Text("输入 DELETE").foregroundColor(ApocalypseTheme.textSecondary))
+                        .textInputAutocapitalization(.characters)
+                        .autocorrectionDisabled()
+                        .padding()
+                        .background(Color.white.opacity(0.1))
+                        .cornerRadius(12)
+                        .foregroundColor(ApocalypseTheme.text)
+                        .padding(.horizontal, 24)
+
+                    // 删除按钮
+                    Button(action: {
+                        showDeleteConfirmSheet = false
+                        deleteConfirmText = ""
+                        performDeleteAccount()
+                    }) {
+                        Text("永久删除账户")
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(deleteConfirmText == "DELETE" ? ApocalypseTheme.danger : ApocalypseTheme.danger.opacity(0.3))
+                            .cornerRadius(12)
+                    }
+                    .disabled(deleteConfirmText != "DELETE")
+                    .padding(.horizontal, 24)
+
+                    Spacer()
+                }
+            }
+            .navigationTitle("删除账户")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("取消") {
+                        showDeleteConfirmSheet = false
+                        deleteConfirmText = ""
+                    }
+                    .foregroundColor(ApocalypseTheme.primary)
+                }
+            }
+        }
+        .presentationDetents([.medium])
+    }
+
+    // MARK: - 加载遮罩
+
+    private var loadingOverlay: some View {
+        ZStack {
+            Color.black.opacity(0.7)
+                .ignoresSafeArea()
+
+            VStack(spacing: 20) {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                    .scaleEffect(1.5)
+
+                Text("正在删除账户...")
+                    .font(.headline)
+                    .foregroundColor(.white)
+
+                Text("请勿关闭应用")
+                    .font(.subheadline)
+                    .foregroundColor(.white.opacity(0.7))
+            }
+            .padding(40)
+            .background(ApocalypseTheme.cardBackground)
+            .cornerRadius(20)
         }
     }
 
@@ -91,9 +205,9 @@ struct ProfileTabView: View {
                     )
                     .frame(width: 100, height: 100)
 
-                // 如果有头像URL则显示头像，否则显示默认图标
-                Image(systemName: "person.fill")
-                    .font(.system(size: 50))
+                // 显示邮箱首字母作为头像
+                Text(avatarInitial)
+                    .font(.system(size: 42, weight: .bold))
                     .foregroundColor(.white)
             }
 
@@ -132,6 +246,14 @@ struct ProfileTabView: View {
             return email.components(separatedBy: "@").first ?? "幸存者"
         }
         return "幸存者"
+    }
+
+    /// 头像首字母
+    private var avatarInitial: String {
+        if let email = authManager.currentUser?.email, let firstChar = email.first {
+            return String(firstChar).uppercased()
+        }
+        return "?"
     }
 
     // MARK: - 统计数据
@@ -189,6 +311,13 @@ struct ProfileTabView: View {
 
                 settingsRow(icon: "bell", title: "通知设置", showArrow: true) {
                     // TODO: 跳转通知设置
+                }
+
+                Divider()
+                    .background(ApocalypseTheme.separator)
+
+                settingsRow(icon: "globe", title: "语言设置", showArrow: true) {
+                    // TODO: 跳转语言设置
                 }
 
                 Divider()
