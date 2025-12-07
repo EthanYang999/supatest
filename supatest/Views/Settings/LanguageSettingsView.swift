@@ -3,19 +3,20 @@
 //  supatest
 //
 //  EarthLord 游戏语言设置页面
+//  支持三种选项：跟随系统、简体中文、English
 //
 
 import SwiftUI
 
 struct LanguageSettingsView: View {
-    @StateObject private var localizationManager = LocalizationManager.shared
+    @ObservedObject private var localizationManager = LocalizationManager.shared
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         Form {
             Section {
-                ForEach(AppLanguage.allCases, id: \.self) { language in
-                    languageRow(language: language)
+                ForEach(LanguageOption.allCases) { option in
+                    languageRow(option: option)
                 }
             } header: {
                 Text("选择语言")
@@ -32,22 +33,26 @@ struct LanguageSettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    private func languageRow(language: AppLanguage) -> some View {
+    // MARK: - 语言行视图
+
+    private func languageRow(option: LanguageOption) -> some View {
         Button(action: {
-            localizationManager.setLanguage(language)
+            withAnimation(.easeInOut(duration: 0.2)) {
+                localizationManager.setLanguage(option)
+            }
         }) {
-            HStack {
+            HStack(spacing: 12) {
                 // 语言图标
-                Text(language.flag)
+                Text(option.flag)
                     .font(.title2)
 
                 // 语言名称
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(language.displayName)
+                    Text(option.displayName)
                         .foregroundColor(ApocalypseTheme.text)
-                        .fontWeight(localizationManager.currentLanguage == language ? .semibold : .regular)
+                        .fontWeight(localizationManager.selectedOption == option ? .semibold : .regular)
 
-                    Text(language.nativeName)
+                    Text(option.subtitle)
                         .font(.caption)
                         .foregroundColor(ApocalypseTheme.textSecondary)
                 }
@@ -55,10 +60,11 @@ struct LanguageSettingsView: View {
                 Spacer()
 
                 // 选中标记
-                if localizationManager.currentLanguage == language {
+                if localizationManager.selectedOption == option {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(ApocalypseTheme.primary)
                         .font(.title3)
+                        .transition(.scale.combined(with: .opacity))
                 }
             }
             .contentShape(Rectangle())

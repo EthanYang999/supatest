@@ -23,6 +23,9 @@
         }
       }
     },
+    "English" : {
+
+    },
     "ID: %@..." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -397,6 +400,17 @@
         }
       }
     },
+    "简体中文" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Simplified Chinese"
+          }
+        }
+      }
+    },
     "管理你的领土" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -448,6 +462,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Settings"
+          }
+        }
+      }
+    },
+    "语言" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language"
           }
         }
       }
@@ -525,6 +550,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resources"
+          }
+        }
+      }
+    },
+    "跟随系统" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Follow System"
           }
         }
       }

@@ -302,35 +302,38 @@ struct ProfileTabView: View {
                 .foregroundColor(ApocalypseTheme.text)
 
             VStack(spacing: 0) {
-                settingsRow(icon: "person.circle", title: "编辑资料", showArrow: true) {
+                settingsRowButton(icon: "person.circle", title: "编辑资料") {
                     // TODO: 跳转编辑资料页面
                 }
 
                 Divider()
                     .background(ApocalypseTheme.separator)
 
-                settingsRow(icon: "bell", title: "通知设置", showArrow: true) {
+                settingsRowButton(icon: "bell", title: "通知设置") {
                     // TODO: 跳转通知设置
                 }
 
                 Divider()
                     .background(ApocalypseTheme.separator)
 
-                settingsRow(icon: "globe", title: "语言设置", showArrow: true) {
-                    // TODO: 跳转语言设置
+                // 语言设置 - 使用 NavigationLink
+                NavigationLink {
+                    LanguageSettingsView()
+                } label: {
+                    settingsRowLabel(icon: "globe", title: "语言设置")
                 }
 
                 Divider()
                     .background(ApocalypseTheme.separator)
 
-                settingsRow(icon: "questionmark.circle", title: "帮助与反馈", showArrow: true) {
+                settingsRowButton(icon: "questionmark.circle", title: "帮助与反馈") {
                     // TODO: 跳转帮助页面
                 }
 
                 Divider()
                     .background(ApocalypseTheme.separator)
 
-                settingsRow(icon: "info.circle", title: "关于", showArrow: true) {
+                settingsRowButton(icon: "info.circle", title: "关于") {
                     // TODO: 跳转关于页面
                 }
             }
@@ -339,28 +342,32 @@ struct ProfileTabView: View {
         }
     }
 
-    private func settingsRow(icon: String, title: LocalizedStringKey, showArrow: Bool, action: @escaping () -> Void) -> some View {
+    /// 设置行 - 按钮样式（用于暂未实现的功能）
+    private func settingsRowButton(icon: String, title: LocalizedStringKey, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack {
-                Image(systemName: icon)
-                    .font(.system(size: 18))
-                    .foregroundColor(ApocalypseTheme.primary)
-                    .frame(width: 28)
-
-                Text(title)
-                    .foregroundColor(ApocalypseTheme.text)
-
-                Spacer()
-
-                if showArrow {
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 14))
-                        .foregroundColor(ApocalypseTheme.textSecondary)
-                }
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 14)
+            settingsRowLabel(icon: icon, title: title)
         }
+    }
+
+    /// 设置行 - 标签样式（用于 NavigationLink）
+    private func settingsRowLabel(icon: String, title: LocalizedStringKey) -> some View {
+        HStack {
+            Image(systemName: icon)
+                .font(.system(size: 18))
+                .foregroundColor(ApocalypseTheme.primary)
+                .frame(width: 28)
+
+            Text(title)
+                .foregroundColor(ApocalypseTheme.text)
+
+            Spacer()
+
+            Image(systemName: "chevron.right")
+                .font(.system(size: 14))
+                .foregroundColor(ApocalypseTheme.textSecondary)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
     }
 
     // MARK: - 退出登录按钮

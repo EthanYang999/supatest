@@ -12,6 +12,9 @@ struct supatestApp: App {
     /// 认证管理器
     @StateObject private var authManager = AuthManager.shared
 
+    /// 语言管理器
+    @StateObject private var localizationManager = LocalizationManager.shared
+
     init() {
         configureAppearance()
     }
@@ -20,6 +23,9 @@ struct supatestApp: App {
         WindowGroup {
             RootView()
                 .environmentObject(authManager)
+                .environmentObject(localizationManager)
+                // 使用 refreshID 强制刷新整个 UI 树
+                .id(localizationManager.refreshID)
         }
     }
 
@@ -67,6 +73,7 @@ struct supatestApp: App {
 /// 根视图：根据认证状态显示不同页面
 struct RootView: View {
     @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject var localizationManager: LocalizationManager
 
     var body: some View {
         Group {
@@ -85,5 +92,7 @@ struct RootView: View {
         }
         .animation(.easeInOut(duration: 0.3), value: authManager.isAuthenticated)
         .animation(.easeInOut(duration: 0.3), value: authManager.isInitialized)
+        // 监听语言变化，确保 UI 更新
+        .environment(\.locale, Locale(identifier: localizationManager.currentLanguageCode))
     }
 }

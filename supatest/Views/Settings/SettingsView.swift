@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject var authManager = AuthManager.shared
-    @StateObject private var localizationManager = LocalizationManager.shared
+    @ObservedObject private var localizationManager = LocalizationManager.shared
 
     // MARK: - 状态属性
 
@@ -93,7 +93,7 @@ struct SettingsView: View {
                     icon: "globe",
                     iconColor: ApocalypseTheme.primary,
                     title: "语言",
-                    value: localizationManager.currentLanguage.displayName
+                    value: localizationManager.currentLanguageDisplayName
                 )
             }
         } header: {
