@@ -104,6 +104,9 @@ struct MapViewRepresentable: UIViewRepresentable {
     /// POI 点击回调
     var onPOITapped: ((POI) -> Void)?
 
+    /// 三指点击回调（用于 Debug 模式）
+    var onTripleFingerTap: (() -> Void)?
+
     func makeUIView(context: Context) -> MKMapView {
         let mapView = MKMapView()
         mapView.delegate = context.coordinator
@@ -133,6 +136,17 @@ struct MapViewRepresentable: UIViewRepresentable {
 
         // 应用末日风格滤镜
         applyApocalypseFilter(to: mapView)
+
+        // 添加三指点击手势（用于 Debug 模式模拟发现）
+        #if DEBUG
+        let tripleFingerTap = UITapGestureRecognizer(
+            target: context.coordinator,
+            action: #selector(Coordinator.handleTripleFingerTap)
+        )
+        tripleFingerTap.numberOfTouchesRequired = 3
+        tripleFingerTap.numberOfTapsRequired = 1
+        mapView.addGestureRecognizer(tripleFingerTap)
+        #endif
 
         return mapView
     }
@@ -344,6 +358,16 @@ struct MapViewRepresentable: UIViewRepresentable {
         func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
             // 可选：点击标注时的额外处理
         }
+
+        // MARK: - Debug Gesture Handler
+
+        #if DEBUG
+        /// 处理三指点击手势
+        @objc func handleTripleFingerTap() {
+            print("🔧 [DEBUG] 检测到三指点击")
+            parent.onTripleFingerTap?()
+        }
+        #endif
     }
 }
 
@@ -354,7 +378,9 @@ struct MapViewRepresentable: UIViewRepresentable {
         userLocation: .constant(nil),
         shouldCenterOnUser: .constant(true),
         nearbyPOIs: [],
-        discoveredPOIIds: []
+        discoveredPOIIds: [],
+        onPOITapped: nil,
+        onTripleFingerTap: nil
     )
     .ignoresSafeArea()
 }

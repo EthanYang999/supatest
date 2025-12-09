@@ -83,6 +83,11 @@ class ExplorationManager: ObservableObject {
 
     private init() {}
 
+    // MARK: - 依赖
+
+    /// 发现管理器
+    private let discoveryManager = DiscoveryManager.shared
+
     // MARK: - 发布属性
 
     /// 是否在探索中
@@ -103,9 +108,23 @@ class ExplorationManager: ObservableObject {
     /// 错误信息
     @Published var errorMessage: String?
 
+    /// 本次探索发现的 POI 数量
+    @Published var poisDiscoveredThisSession: Int = 0
+
+    // MARK: - 私有属性
+
+    /// 位置追踪定时器
+    private var locationTrackingTimer: Timer?
+
+    /// 当前用户 ID（探索期间保存）
+    private var currentUserId: UUID?
+
     // MARK: - 常量
 
     private let searchRadius: Double = 1000 // 搜索半径（米）
+    private let trackingInterval: TimeInterval = 5 // 位置追踪间隔（秒）
+    private let poiCacheUpdateInterval: TimeInterval = 30 // POI 缓存更新间隔（秒）
+    private var lastPOICacheUpdate: Date = .distantPast
 
     // MARK: - 开始探索
 
@@ -143,14 +162,24 @@ class ExplorationManager: ObservableObject {
                 lastLocation: location
             )
 
+            // 保存用户 ID
+            currentUserId = userId
+
+            // 重置本次探索统计
+            poisDiscoveredThisSession = 0
+
             // 获取附近POI
             await updatePOICache(location: location)
+            lastPOICacheUpdate = Date()
 
             // 加载已发现的POI列表
             await loadDiscoveredPOIIds(userId: userId)
 
             // 设置探索状态
             isExploring = true
+
+            // 启动位置追踪
+            startLocationTracking()
 
             print("✅ 开始探索，会话ID: \(response.session_id)")
 
@@ -188,21 +217,28 @@ class ExplorationManager: ObservableObject {
                 params: params
             ).execute().value
 
+            // 停止位置追踪
+            stopLocationTracking()
+
             // 创建探索结果
             let result = ExplorationResult(
                 sessionId: sessionId,
                 duration: duration,
                 totalDistance: explorationStats.totalDistance,
-                poisDiscovered: discoveredPOIIds.count,
+                poisDiscovered: poisDiscoveredThisSession,
                 rewards: nil // TODO: 后续实现奖励计算
             )
 
             // 重置状态
             isExploring = false
             currentSessionId = nil
+            currentUserId = nil
             explorationStats = ExplorationStats()
 
-            print("✅ 结束探索，时长: \(Int(duration))秒，距离: \(Int(explorationStats.totalDistance))米")
+            // 重置发现管理器
+            discoveryManager.reset()
+
+            print("✅ 结束探索，时长: \(Int(duration))秒，距离: \(Int(result.totalDistance))米，发现: \(poisDiscoveredThisSession)个POI")
 
             return result
 
@@ -285,6 +321,76 @@ class ExplorationManager: ObservableObject {
         }
 
         explorationStats.lastLocation = newLocation
+    }
+
+    // MARK: - 位置追踪
+
+    /// 启动位置追踪定时器
+    private func startLocationTracking() {
+        stopLocationTracking() // 确保没有重复的定时器
+
+        print("🔄 启动位置追踪，间隔: \(trackingInterval)秒")
+
+        locationTrackingTimer = Timer.scheduledTimer(withTimeInterval: trackingInterval, repeats: true) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                await self?.performLocationCheck()
+            }
+        }
+    }
+
+    /// 停止位置追踪定时器
+    private func stopLocationTracking() {
+        locationTrackingTimer?.invalidate()
+        locationTrackingTimer = nil
+        print("⏹️ 停止位置追踪")
+    }
+
+    /// 执行位置检测
+    private func performLocationCheck() async {
+        guard isExploring,
+              let location = explorationStats.lastLocation,
+              let userId = currentUserId else {
+            return
+        }
+
+        // 定期更新 POI 缓存
+        if Date().timeIntervalSince(lastPOICacheUpdate) > poiCacheUpdateInterval {
+            await updatePOICache(location: location)
+            lastPOICacheUpdate = Date()
+        }
+
+        // 清理远离的已触发 POI
+        discoveryManager.clearDistantTriggeredPOIs(currentLocation: location, nearbyPOIs: nearbyPOIs)
+
+        // 检测附近 POI
+        await trackLocation(location, userId: userId)
+    }
+
+    /// 追踪位置并检测 POI 发现
+    /// - Parameters:
+    ///   - location: 当前位置
+    ///   - userId: 用户 ID
+    func trackLocation(_ location: CLLocationCoordinate2D, userId: UUID) async {
+        // 检查接近的 POI
+        if let nearbyPOI = discoveryManager.checkProximity(
+            currentLocation: location,
+            nearbyPOIs: nearbyPOIs,
+            discoveredPOIIds: discoveredPOIIds
+        ) {
+            // 触发发现
+            do {
+                let result = try await discoveryManager.triggerDiscovery(poi: nearbyPOI, userId: userId)
+
+                // 更新已发现列表
+                discoveredPOIIds.insert(nearbyPOI.id)
+                poisDiscoveredThisSession += 1
+
+                print("🎉 发现新 POI: \(nearbyPOI.name ?? nearbyPOI.id)，本次探索共发现: \(poisDiscoveredThisSession) 个")
+
+            } catch {
+                print("❌ 触发发现失败: \(error)")
+            }
+        }
     }
 
     // MARK: - 辅助方法

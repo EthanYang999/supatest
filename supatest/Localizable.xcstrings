@@ -1260,6 +1260,39 @@
           }
         }
       }
+    },
+    "发现废墟！" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruins Discovered!"
+          }
+        }
+      }
+    },
+    "全服首次发现！" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server First Discovery!"
+          }
+        }
+      }
+    },
+    "前往探索" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explore"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

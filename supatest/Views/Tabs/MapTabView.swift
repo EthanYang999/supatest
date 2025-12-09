@@ -23,6 +23,7 @@ struct MapTabView: View {
     @StateObject private var locationManager = LocationManager()
     @ObservedObject var explorationManager = ExplorationManager.shared
     @ObservedObject var authManager = AuthManager.shared
+    @ObservedObject var discoveryManager = DiscoveryManager.shared
 
     @State private var userLocation: CLLocationCoordinate2D?
     @State private var shouldCenterOnUser: Bool = true
@@ -49,6 +50,12 @@ struct MapTabView: View {
     /// 显示 POI 详情弹窗
     @State private var showPOIDetail: Bool = false
 
+    #if DEBUG
+    /// 显示调试模式提示
+    @State private var showDebugToast: Bool = false
+    @State private var debugToastMessage: String = ""
+    #endif
+
     var body: some View {
         ZStack {
             // 地图视图
@@ -60,6 +67,11 @@ struct MapTabView: View {
                 onPOITapped: { poi in
                     selectedPOI = poi
                     showPOIDetail = true
+                },
+                onTripleFingerTap: {
+                    #if DEBUG
+                    handleDebugSimulation()
+                    #endif
                 }
             )
             .ignoresSafeArea()
@@ -153,9 +165,36 @@ struct MapTabView: View {
                 POIDetailSheet(poi: poi)
             }
         }
+        .overlay {
+            // 发现 POI 弹窗
+            if discoveryManager.showDiscoveryAlert, let result = discoveryManager.lastDiscoveryResult {
+                DiscoveryAlertView(
+                    discoveryResult: result,
+                    onExplore: {
+                        // 选中该 POI 并显示详情
+                        selectedPOI = result.poi
+                        showPOIDetail = true
+                    },
+                    onDismiss: {
+                        discoveryManager.dismissDiscoveryAlert()
+                    }
+                )
+                .transition(.opacity)
+            }
+        }
         .onChange(of: locationManager.locationError) { _, error in
             showLocationError = error != nil
         }
+        #if DEBUG
+        .overlay(alignment: .top) {
+            // Debug 提示 Toast
+            if showDebugToast {
+                debugToastView
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .padding(.top, 120)
+            }
+        }
+        #endif
     }
 
     // MARK: - POI Detail Sheet
@@ -518,6 +557,75 @@ struct MapTabView: View {
             return String(localized: "\(secs)秒")
         }
     }
+
+    // MARK: - Debug Methods
+
+    #if DEBUG
+    /// Debug Toast 视图
+    private var debugToastView: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "ladybug.fill")
+                .foregroundColor(.white)
+            Text(debugToastMessage)
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundColor(.white)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(Color.purple.opacity(0.9))
+        .cornerRadius(20)
+        .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+    }
+
+    /// 处理调试模拟发现
+    private func handleDebugSimulation() {
+        guard explorationManager.isExploring else {
+            showDebugToastMessage("请先开始探索")
+            return
+        }
+
+        guard let userId = authManager.currentUser?.id else {
+            showDebugToastMessage("用户未登录")
+            return
+        }
+
+        Task {
+            let success = await discoveryManager.simulateDiscoveryNearest(
+                nearbyPOIs: explorationManager.nearbyPOIs,
+                discoveredPOIIds: explorationManager.discoveredPOIIds,
+                userId: userId
+            )
+
+            if success {
+                // 更新探索管理器的已发现列表
+                if let lastResult = discoveryManager.lastDiscoveryResult {
+                    explorationManager.discoveredPOIIds.insert(lastResult.poi.id)
+                    explorationManager.poisDiscoveredThisSession += 1
+                }
+                showDebugToastMessage("模拟发现成功！")
+            } else {
+                showDebugToastMessage("没有可发现的 POI")
+            }
+        }
+    }
+
+    /// 显示 Debug Toast
+    private func showDebugToastMessage(_ message: String) {
+        debugToastMessage = message
+
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+            showDebugToast = true
+        }
+
+        // 2秒后自动隐藏
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            withAnimation(.easeInOut(duration: 0.3)) {
+                showDebugToast = false
+            }
+        }
+    }
+    #endif
 }
 
 #Preview {
