@@ -82,13 +82,15 @@ struct MapTabView: View {
                 Spacer()
             }
 
-            // 探索状态栏（探索中显示）
+            // 探索状态卡片（探索中显示）
             if explorationManager.isExploring {
                 VStack {
-                    explorationStatusBar
+                    ExplorationStatusCardCompact(explorationManager: explorationManager)
+                        .padding(.horizontal, 16)
                         .padding(.top, 60)
                     Spacer()
                 }
+                .transition(.move(edge: .top).combined(with: .opacity))
             }
 
             // 控制按钮
@@ -136,20 +138,22 @@ struct MapTabView: View {
                 Text(locationManager.locationError?.errorDescription ?? "未知错误")
             }
         )
-        .alert(
-            "探索完成",
-            isPresented: $showExplorationResult,
-            actions: {
-                Button("确定", role: .cancel) {}
-            },
-            message: {
-                if let result = explorationResult {
-                    Text("探索时长: \(formatDuration(result.duration))\n移动距离: \(Int(result.totalDistance))米")
-                } else {
-                    Text("探索已结束")
-                }
+        .fullScreenCover(isPresented: $showExplorationResult) {
+            if let result = explorationResult {
+                ExplorationResultView(
+                    result: ExplorationResultData(
+                        sessionId: result.sessionId,
+                        duration: result.duration,
+                        distance: result.totalDistance,
+                        poisDiscovered: result.poisDiscovered,
+                        rewards: result.rewards
+                    ),
+                    onConfirm: {
+                        explorationResult = nil
+                    }
+                )
             }
-        )
+        }
         .alert(
             "错误",
             isPresented: $showErrorAlert,
@@ -166,8 +170,18 @@ struct MapTabView: View {
             }
         }
         .overlay {
-            // 发现 POI 弹窗
-            if discoveryManager.showDiscoveryAlert, let result = discoveryManager.lastDiscoveryResult {
+            // 批量发现 POI 弹窗（优先显示）
+            if discoveryManager.showBatchDiscoveryAlert, !discoveryManager.lastBatchDiscoveryResults.isEmpty {
+                BatchDiscoveryAlertView(
+                    discoveries: discoveryManager.lastBatchDiscoveryResults,
+                    onDismiss: {
+                        discoveryManager.dismissBatchDiscoveryAlert()
+                    }
+                )
+                .transition(.opacity)
+            }
+            // 单个发现 POI 弹窗（保留向后兼容）
+            else if discoveryManager.showDiscoveryAlert, let result = discoveryManager.lastDiscoveryResult {
                 DiscoveryAlertView(
                     discoveryResult: result,
                     onExplore: {
@@ -364,90 +378,48 @@ struct MapTabView: View {
         }
     }
 
-    // MARK: - Exploration Status Bar
-
-    private var explorationStatusBar: some View {
-        HStack(spacing: 12) {
-            // 探索中指示器
-            Circle()
-                .fill(ApocalypseTheme.warning)
-                .frame(width: 10, height: 10)
-                .overlay(
-                    Circle()
-                        .stroke(ApocalypseTheme.warning.opacity(0.5), lineWidth: 4)
-                        .scaleEffect(1.5)
-                )
-
-            Text("探索中...")
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .foregroundColor(ApocalypseTheme.text)
-
-            Spacer()
-
-            // 已发现POI数量
-            HStack(spacing: 4) {
-                Image(systemName: "mappin.circle.fill")
-                    .foregroundColor(ApocalypseTheme.primary)
-                Text("\(explorationManager.nearbyPOIs.count)")
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .foregroundColor(ApocalypseTheme.text)
-                Text("附近")
-                    .font(.caption)
-                    .foregroundColor(ApocalypseTheme.textSecondary)
-            }
-
-            // 移动距离
-            HStack(spacing: 4) {
-                Image(systemName: "figure.walk")
-                    .foregroundColor(ApocalypseTheme.primary)
-                Text("\(Int(explorationManager.explorationStats.totalDistance))m")
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .foregroundColor(ApocalypseTheme.text)
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .background(ApocalypseTheme.cardBackground.opacity(0.95))
-        .cornerRadius(12)
-        .padding(.horizontal, 16)
-    }
-
     // MARK: - Exploration Button
 
     private var explorationButton: some View {
-        Button {
-            if explorationManager.isExploring {
-                stopExploration()
-            } else {
-                startExploration()
-            }
-        } label: {
-            HStack(spacing: 12) {
-                if isExplorationLoading {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                        .scaleEffect(0.8)
+        explorationButtonContent
+            .onTapGesture {
+                if explorationManager.isExploring {
+                    stopExploration()
                 } else {
-                    Image(systemName: explorationManager.isExploring ? "stop.fill" : "figure.walk")
-                        .font(.system(size: 18, weight: .semibold))
+                    startExploration()
                 }
-
-                Text(explorationButtonTitle)
-                    .font(.headline)
-                    .fontWeight(.semibold)
             }
-            .foregroundColor(.white)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
-            .background(explorationButtonBackground)
-            .cornerRadius(12)
-            .shadow(color: explorationManager.isExploring ? ApocalypseTheme.warning.opacity(0.4) : ApocalypseTheme.primary.opacity(0.4), radius: 8, x: 0, y: 4)
+            #if DEBUG
+            .onLongPressGesture(minimumDuration: 2.0) {
+                // 长按2秒触发快速测试模式
+                startQuickTestExploration()
+            }
+            #endif
+            .disabled(isExplorationLoading || userLocation == nil)
+            .opacity(userLocation == nil ? 0.5 : 1)
+    }
+
+    private var explorationButtonContent: some View {
+        HStack(spacing: 12) {
+            if isExplorationLoading {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                    .scaleEffect(0.8)
+            } else {
+                Image(systemName: explorationManager.isExploring ? "stop.fill" : "figure.walk")
+                    .font(.system(size: 18, weight: .semibold))
+            }
+
+            Text(explorationButtonTitle)
+                .font(.headline)
+                .fontWeight(.semibold)
         }
-        .disabled(isExplorationLoading || userLocation == nil)
-        .opacity(userLocation == nil ? 0.5 : 1)
+        .foregroundColor(.white)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 16)
+        .background(explorationButtonBackground)
+        .cornerRadius(12)
+        .shadow(color: explorationManager.isExploring ? ApocalypseTheme.warning.opacity(0.4) : ApocalypseTheme.primary.opacity(0.4), radius: 8, x: 0, y: 4)
     }
 
     /// 探索按钮标题
@@ -623,6 +595,70 @@ struct MapTabView: View {
             withAnimation(.easeInOut(duration: 0.3)) {
                 showDebugToast = false
             }
+        }
+    }
+
+    /// 快速测试探索（长按触发）
+    private func startQuickTestExploration() {
+        guard !explorationManager.isExploring else {
+            showDebugToastMessage("已在探索中")
+            return
+        }
+
+        guard let location = userLocation else {
+            showDebugToastMessage("无法获取位置")
+            return
+        }
+
+        guard let userId = authManager.currentUser?.id else {
+            showDebugToastMessage("用户未登录")
+            return
+        }
+
+        showDebugToastMessage("🧪 快速测试开始...")
+        isExplorationLoading = true
+
+        Task {
+            do {
+                let result = try await explorationManager.startQuickTestExploration(
+                    userId: userId,
+                    location: location,
+                    onProgress: { progress in
+                        Task { @MainActor in
+                            handleQuickTestProgress(progress)
+                        }
+                    }
+                )
+
+                await MainActor.run {
+                    isExplorationLoading = false
+                    explorationResult = result
+                    showExplorationResult = true
+                }
+            } catch {
+                await MainActor.run {
+                    isExplorationLoading = false
+                    showDebugToastMessage("测试失败: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+    /// 处理快速测试进度
+    private func handleQuickTestProgress(_ progress: ExplorationManager.QuickTestProgress) {
+        switch progress {
+        case .started:
+            showDebugToastMessage("🧪 探索已启动")
+        case .discoveredPOI(let count):
+            showDebugToastMessage("🧪 发现第\(count)个POI")
+        case .walking(let distance):
+            showDebugToastMessage("🧪 已行走\(Int(distance))米")
+        case .finishing:
+            showDebugToastMessage("🧪 准备结束...")
+        case .completed:
+            showDebugToastMessage("🧪 测试完成！")
+        case .failed(let error):
+            showDebugToastMessage("🧪 失败: \(error.localizedDescription)")
         }
     }
     #endif

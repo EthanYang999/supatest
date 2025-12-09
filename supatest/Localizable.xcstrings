@@ -7,9 +7,6 @@
     "%lld 个" : {
 
     },
-    "%lldm" : {
-
-    },
     "%lld分%lld秒" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -20,6 +17,9 @@
           }
         }
       }
+    },
+    "%lld种" : {
+
     },
     "%lld秒" : {
       "extractionState" : "manual",
@@ -42,6 +42,9 @@
           }
         }
       }
+    },
+    "×%lld" : {
+
     },
     "EARTH LORD" : {
       "extractionState" : "manual",
@@ -134,6 +137,9 @@
         }
       }
     },
+    "优质" : {
+
+    },
     "位置服务受限" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -185,6 +191,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stop Exploring"
+          }
+        }
+      }
+    },
+    "全服首次发现！" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server First Discovery!"
           }
         }
       }
@@ -255,6 +272,17 @@
         }
       }
     },
+    "前往探索" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explore"
+          }
+        }
+      }
+    },
     "加油站" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -288,6 +316,9 @@
         }
       }
     },
+    "包含 %lld 个全服首次发现！" : {
+
+    },
     "医院" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -295,6 +326,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hospital"
+          }
+        }
+      }
+    },
+    "发现" : {
+
+    },
+    "发现 %lld 个地点" : {
+
+    },
+    "发现废墟" : {
+
+    },
+    "发现废墟！" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruins Discovered!"
           }
         }
       }
@@ -321,6 +372,12 @@
         }
       }
     },
+    "品质" : {
+
+    },
+    "品质值" : {
+
+    },
     "在废土中行走，成为新的主宰" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -342,6 +399,9 @@
           }
         }
       }
+    },
+    "地点搜刮" : {
+
     },
     "地点详情" : {
       "extractionState" : "manual",
@@ -409,6 +469,9 @@
         }
       }
     },
+    "布料" : {
+
+    },
     "帮助与反馈" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -441,6 +504,9 @@
           }
         }
       }
+    },
+    "开始探索来收集物资吧！" : {
+
     },
     "当前坐标" : {
       "extractionState" : "manual",
@@ -497,6 +563,9 @@
         }
       }
     },
+    "探索中" : {
+
+    },
     "探索中..." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -530,15 +599,8 @@
         }
       }
     },
-    "探索时长: %@\n移动距离: %lld米" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "探索时长: %1$@\n移动距离: %2$lld米"
-          }
-        }
-      }
+    "探索时长" : {
+
     },
     "探索末日世界" : {
       "extractionState" : "manual",
@@ -551,7 +613,16 @@
         }
       }
     },
+    "探索结束" : {
+
+    },
+    "探索获得" : {
+
+    },
     "搜索半径: %lld米" : {
+
+    },
+    "收下" : {
 
     },
     "收集和管理资源" : {
@@ -565,6 +636,9 @@
         }
       }
     },
+    "数量" : {
+
+    },
     "无法获取当前位置" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -575,6 +649,12 @@
           }
         }
       }
+    },
+    "时间" : {
+
+    },
+    "普通" : {
+
     },
     "暂无 POI 数据" : {
       "extractionState" : "manual",
@@ -598,6 +678,9 @@
         }
       }
     },
+    "木材" : {
+
+    },
     "未知地点" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -620,6 +703,9 @@
         }
       }
     },
+    "未知来源" : {
+
+    },
     "未知错误" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -630,6 +716,12 @@
           }
         }
       }
+    },
+    "本次探索未获得物资" : {
+
+    },
+    "来源" : {
+
     },
     "正在删除账户..." : {
       "extractionState" : "manual",
@@ -674,6 +766,12 @@
           }
         }
       }
+    },
+    "武器零件" : {
+
+    },
+    "水瓶" : {
+
     },
     "永久删除账户" : {
       "extractionState" : "manual",
@@ -730,6 +828,12 @@
         }
       }
     },
+    "添加测试物品" : {
+
+    },
+    "清空背包" : {
+
+    },
     "点击上方按钮加载附近的 POI" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -751,6 +855,18 @@
           }
         }
       }
+    },
+    "燃料" : {
+
+    },
+    "物品总数" : {
+
+    },
+    "物品种类" : {
+
+    },
+    "物品详情" : {
+
     },
     "物资" : {
       "extractionState" : "manual",
@@ -774,6 +890,15 @@
         }
       }
     },
+    "电子元件" : {
+
+    },
+    "知道了" : {
+
+    },
+    "破损" : {
+
+    },
     "确定" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -795,6 +920,9 @@
           }
         }
       }
+    },
+    "稀有材料" : {
+
     },
     "等待测试" : {
       "extractionState" : "manual",
@@ -829,6 +957,9 @@
         }
       }
     },
+    "精良" : {
+
+    },
     "纬度" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -862,6 +993,9 @@
         }
       }
     },
+    "绷带" : {
+
+    },
     "编辑资料" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -872,6 +1006,18 @@
           }
         }
       }
+    },
+    "罐头食品" : {
+
+    },
+    "背包" : {
+
+    },
+    "背包是空的" : {
+
+    },
+    "药品" : {
+
     },
     "药房" : {
       "extractionState" : "manual",
@@ -884,6 +1030,12 @@
         }
       }
     },
+    "获取时间" : {
+
+    },
+    "获得物资" : {
+
+    },
     "行走" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -894,6 +1046,9 @@
           }
         }
       }
+    },
+    "行走距离" : {
+
     },
     "设置" : {
       "extractionState" : "manual",
@@ -1203,6 +1358,9 @@
         }
       }
     },
+    "金属" : {
+
+    },
     "错误" : {
 
     },
@@ -1250,6 +1408,9 @@
         }
       }
     },
+    "首发" : {
+
+    },
     "验证码已发送至" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1257,39 +1418,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Code sent to"
-          }
-        }
-      }
-    },
-    "发现废墟！" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ruins Discovered!"
-          }
-        }
-      }
-    },
-    "全服首次发现！" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Server First Discovery!"
-          }
-        }
-      }
-    },
-    "前往探索" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Explore"
           }
         }
       }

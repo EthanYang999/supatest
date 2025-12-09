@@ -48,7 +48,7 @@ struct ExplorationResult {
     let duration: TimeInterval
     let totalDistance: Double
     let poisDiscovered: Int
-    let rewards: [String: Any]?
+    let rewards: [RewardItem]
 }
 
 // MARK: - RPC 响应模型
@@ -119,12 +119,18 @@ class ExplorationManager: ObservableObject {
     /// 当前用户 ID（探索期间保存）
     private var currentUserId: UUID?
 
+    /// 上次触发 POI 检测的位置
+    private var lastDetectionLocation: CLLocationCoordinate2D?
+
     // MARK: - 常量
 
     private let searchRadius: Double = 1000 // 搜索半径（米）
     private let trackingInterval: TimeInterval = 5 // 位置追踪间隔（秒）
     private let poiCacheUpdateInterval: TimeInterval = 30 // POI 缓存更新间隔（秒）
     private var lastPOICacheUpdate: Date = .distantPast
+
+    /// 触发 POI 检测的移动距离阈值（米）
+    private let detectionMovementThreshold: Double = 50
 
     // MARK: - 开始探索
 
@@ -167,6 +173,9 @@ class ExplorationManager: ObservableObject {
 
             // 重置本次探索统计
             poisDiscoveredThisSession = 0
+
+            // 初始化检测位置（首次启动立即触发一次检测）
+            lastDetectionLocation = nil
 
             // 获取附近POI
             await updatePOICache(location: location)
@@ -220,25 +229,39 @@ class ExplorationManager: ObservableObject {
             // 停止位置追踪
             stopLocationTracking()
 
+            // 计算探索奖励
+            let rewards = LocalExplorationRewardCalculator.calculateRewards(
+                distanceWalked: explorationStats.totalDistance,
+                durationSeconds: Int(duration),
+                poisDiscovered: poisDiscoveredThisSession
+            )
+
             // 创建探索结果
             let result = ExplorationResult(
                 sessionId: sessionId,
                 duration: duration,
                 totalDistance: explorationStats.totalDistance,
                 poisDiscovered: poisDiscoveredThisSession,
-                rewards: nil // TODO: 后续实现奖励计算
+                rewards: rewards
             )
+
+            // 保存本次发现数量用于日志
+            let discoveredCount = poisDiscoveredThisSession
 
             // 重置状态
             isExploring = false
             currentSessionId = nil
             currentUserId = nil
             explorationStats = ExplorationStats()
+            poisDiscoveredThisSession = 0
+            nearbyPOIs = []
+            discoveredPOIIds = []
+            lastDetectionLocation = nil
 
             // 重置发现管理器
             discoveryManager.reset()
 
-            print("✅ 结束探索，时长: \(Int(duration))秒，距离: \(Int(result.totalDistance))米，发现: \(poisDiscoveredThisSession)个POI")
+            print("✅ 结束探索，时长: \(Int(duration))秒，距离: \(Int(result.totalDistance))米，发现: \(discoveredCount)个POI")
 
             return result
 
@@ -362,34 +385,58 @@ class ExplorationManager: ObservableObject {
         // 清理远离的已触发 POI
         discoveryManager.clearDistantTriggeredPOIs(currentLocation: location, nearbyPOIs: nearbyPOIs)
 
-        // 检测附近 POI
-        await trackLocation(location, userId: userId)
+        // 检查是否需要触发 POI 检测（距离变化 > 50米 或 首次检测）
+        let shouldCheckPOIs: Bool
+        if let lastDetection = lastDetectionLocation {
+            let distanceMoved = calculateDistance(from: lastDetection, to: location)
+            shouldCheckPOIs = distanceMoved >= detectionMovementThreshold
+            if shouldCheckPOIs {
+                print("📍 移动距离达到 \(Int(distanceMoved))米，触发 POI 检测")
+            }
+        } else {
+            // 首次检测
+            shouldCheckPOIs = true
+            print("📍 首次位置检测")
+        }
+
+        // 只有满足距离条件时才进行 POI 检测
+        if shouldCheckPOIs {
+            lastDetectionLocation = location
+            await trackLocation(location, userId: userId)
+        }
     }
 
-    /// 追踪位置并检测 POI 发现
+    /// 追踪位置并检测 POI 发现（批量模式）
     /// - Parameters:
     ///   - location: 当前位置
     ///   - userId: 用户 ID
     func trackLocation(_ location: CLLocationCoordinate2D, userId: UUID) async {
-        // 检查接近的 POI
-        if let nearbyPOI = discoveryManager.checkProximity(
+        // 批量检查接近的 POI（100米内所有未发现的）
+        let nearbyUndiscoveredPOIs = discoveryManager.checkProximityBatch(
             currentLocation: location,
             nearbyPOIs: nearbyPOIs,
             discoveredPOIIds: discoveredPOIIds
-        ) {
-            // 触发发现
-            do {
-                let result = try await discoveryManager.triggerDiscovery(poi: nearbyPOI, userId: userId)
+        )
 
-                // 更新已发现列表
-                discoveredPOIIds.insert(nearbyPOI.id)
+        guard !nearbyUndiscoveredPOIs.isEmpty else { return }
+
+        // 批量触发发现
+        do {
+            let results = try await discoveryManager.triggerBatchDiscovery(
+                pois: nearbyUndiscoveredPOIs,
+                userId: userId
+            )
+
+            // 更新已发现列表和计数
+            for result in results {
+                discoveredPOIIds.insert(result.poi.id)
                 poisDiscoveredThisSession += 1
-
-                print("🎉 发现新 POI: \(nearbyPOI.name ?? nearbyPOI.id)，本次探索共发现: \(poisDiscoveredThisSession) 个")
-
-            } catch {
-                print("❌ 触发发现失败: \(error)")
             }
+
+            print("🎉 批量发现 \(results.count) 个 POI，本次探索共发现: \(poisDiscoveredThisSession) 个")
+
+        } catch {
+            print("❌ 批量触发发现失败: \(error)")
         }
     }
 
@@ -429,3 +476,121 @@ enum ExplorationError: LocalizedError {
         }
     }
 }
+
+// MARK: - Quick Test Mode (DEBUG)
+
+#if DEBUG
+extension ExplorationManager {
+    /// 快速测试探索回调类型
+    typealias QuickTestProgressCallback = (QuickTestProgress) -> Void
+
+    /// 快速测试进度
+    enum QuickTestProgress {
+        case started
+        case discoveredPOI(Int)  // 发现第几个POI
+        case walking(Double)     // 当前行走距离
+        case finishing
+        case completed(ExplorationResult)
+        case failed(Error)
+    }
+
+    /// 快速测试探索（约10秒完成）
+    /// 自动模拟：启动探索 → 发现POI → 行走 → 结束探索
+    /// - Parameters:
+    ///   - userId: 用户ID
+    ///   - location: 起始位置
+    ///   - onProgress: 进度回调
+    /// - Returns: 探索结果
+    func startQuickTestExploration(
+        userId: UUID,
+        location: CLLocationCoordinate2D,
+        onProgress: QuickTestProgressCallback? = nil
+    ) async throws -> ExplorationResult {
+        print("🧪 [快速测试] 开始快速测试探索...")
+
+        // 1. 启动探索
+        try await startExploration(userId: userId, location: location)
+        onProgress?(.started)
+        print("🧪 [快速测试] 探索已启动")
+
+        // 2. 等待2秒，模拟发现第一个POI
+        try await Task.sleep(nanoseconds: 2_000_000_000)
+
+        if let _ = await simulateDiscoveryIfAvailable(userId: userId) {
+            onProgress?(.discoveredPOI(1))
+            print("🧪 [快速测试] 发现第1个POI")
+        }
+
+        // 3. 模拟行走200米
+        explorationStats.totalDistance = 200
+        onProgress?(.walking(200))
+        print("🧪 [快速测试] 已行走200米")
+
+        // 4. 再等待2秒，模拟发现第二个POI
+        try await Task.sleep(nanoseconds: 2_000_000_000)
+
+        if let _ = await simulateDiscoveryIfAvailable(userId: userId) {
+            onProgress?(.discoveredPOI(2))
+            print("🧪 [快速测试] 发现第2个POI")
+        }
+
+        // 5. 模拟继续行走到500米
+        explorationStats.totalDistance = 500
+        onProgress?(.walking(500))
+        print("🧪 [快速测试] 已行走500米")
+
+        // 6. 再等待2秒
+        try await Task.sleep(nanoseconds: 2_000_000_000)
+
+        // 7. 设置最终模拟数据
+        explorationStats.totalDistance = 500
+
+        // 8. 准备结束
+        onProgress?(.finishing)
+        print("🧪 [快速测试] 准备结束探索...")
+
+        // 9. 结束探索并返回结果
+        let result = try await stopExploration(location: location)
+        onProgress?(.completed(result))
+        print("🧪 [快速测试] 探索完成！获得 \(result.rewards.count) 种物品")
+
+        return result
+    }
+
+    /// 尝试模拟发现POI（如果有可用的）
+    private func simulateDiscoveryIfAvailable(userId: UUID) async -> DiscoveryResult? {
+        // 检查是否有可发现的POI
+        guard !nearbyPOIs.isEmpty else {
+            print("🧪 [快速测试] 没有附近的POI可以发现")
+            return nil
+        }
+
+        let success = await discoveryManager.simulateDiscoveryNearest(
+            nearbyPOIs: nearbyPOIs,
+            discoveredPOIIds: discoveredPOIIds,
+            userId: userId
+        )
+
+        if success, let result = discoveryManager.lastDiscoveryResult {
+            // 更新已发现列表
+            discoveredPOIIds.insert(result.poi.id)
+            poisDiscoveredThisSession += 1
+            return result
+        }
+
+        return nil
+    }
+
+    /// 快速测试探索（简化版，无回调）
+    func startQuickTestExplorationSimple(
+        userId: UUID,
+        location: CLLocationCoordinate2D
+    ) async throws -> ExplorationResult {
+        return try await startQuickTestExploration(
+            userId: userId,
+            location: location,
+            onProgress: nil
+        )
+    }
+}
+#endif
