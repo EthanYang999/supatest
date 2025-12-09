@@ -1,6 +1,37 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+    "%lld" : {
+
+    },
+    "%lld 个" : {
+
+    },
+    "%lldm" : {
+
+    },
+    "%lld分%lld秒" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld min %lld sec"
+          }
+        }
+      }
+    },
+    "%lld秒" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld sec"
+          }
+        }
+      }
+    },
     "%lld秒后可重新发送" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -33,6 +64,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ID: %@..."
+          }
+        }
+      }
+    },
+    "POI 列表" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POI List"
+          }
+        }
+      }
+    },
+    "POI 调试" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POI Debug"
           }
         }
       }
@@ -81,6 +134,72 @@
         }
       }
     },
+    "位置服务受限" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location services restricted"
+          }
+        }
+      }
+    },
+    "位置权限被拒绝" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location permission denied"
+          }
+        }
+      }
+    },
+    "住宅区" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Residential Area"
+          }
+        }
+      }
+    },
+    "停止中..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stopping..."
+          }
+        }
+      }
+    },
+    "停止探索" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop Exploring"
+          }
+        }
+      }
+    },
+    "公园" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Park"
+          }
+        }
+      }
+    },
     "关于" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -88,6 +207,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "About"
+          }
+        }
+      }
+    },
+    "关闭" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
           }
         }
       }
@@ -125,6 +255,50 @@
         }
       }
     },
+    "加油站" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gas Station"
+          }
+        }
+      }
+    },
+    "加载中..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading..."
+          }
+        }
+      }
+    },
+    "加载附近 POI" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Load Nearby POIs"
+          }
+        }
+      }
+    },
+    "医院" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hospital"
+          }
+        }
+      }
+    },
     "取消" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -132,6 +306,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "启动中..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starting..."
           }
         }
       }
@@ -158,6 +343,17 @@
         }
       }
     },
+    "地点详情" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location Details"
+          }
+        }
+      }
+    },
     "地球新主" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -176,6 +372,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Increase Value"
+          }
+        }
+      }
+    },
+    "学校" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "School"
+          }
+        }
+      }
+    },
+    "定位错误" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location Error"
+          }
+        }
+      }
+    },
+    "工厂" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Factory"
           }
         }
       }
@@ -202,6 +431,28 @@
         }
       }
     },
+    "开始探索" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Exploring"
+          }
+        }
+      }
+    },
+    "当前坐标" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current Location"
+          }
+        }
+      }
+    },
     "忘记密码？" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -224,6 +475,17 @@
         }
       }
     },
+    "打开设置" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings"
+          }
+        }
+      }
+    },
     "找回密码" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -231,6 +493,49 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reset Password"
+          }
+        }
+      }
+    },
+    "探索中..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exploring..."
+          }
+        }
+      }
+    },
+    "探索完成" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exploration Complete"
+          }
+        }
+      }
+    },
+    "探索已结束" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exploration ended"
+          }
+        }
+      }
+    },
+    "探索时长: %@\n移动距离: %lld米" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "探索时长: %1$@\n移动距离: %2$lld米"
           }
         }
       }
@@ -246,6 +551,9 @@
         }
       }
     },
+    "搜索半径: %lld米" : {
+
+    },
     "收集和管理资源" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -253,6 +561,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Collect and manage resources"
+          }
+        }
+      }
+    },
+    "无法获取当前位置" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to get current location"
+          }
+        }
+      }
+    },
+    "暂无 POI 数据" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No POI data"
           }
         }
       }
@@ -268,6 +598,39 @@
         }
       }
     },
+    "未知地点" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown Location"
+          }
+        }
+      }
+    },
+    "未知定位错误" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown location error"
+          }
+        }
+      }
+    },
+    "未知错误" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown error"
+          }
+        }
+      }
+    },
     "正在删除账户..." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -275,6 +638,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deleting account..."
+          }
+        }
+      }
+    },
+    "正在获取位置..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Getting location..."
           }
         }
       }
@@ -356,6 +730,17 @@
         }
       }
     },
+    "点击上方按钮加载附近的 POI" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap the button above to load nearby POIs"
+          }
+        }
+      }
+    },
     "点击按钮开始测试连接..." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -374,6 +759,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Supplies"
+          }
+        }
+      }
+    },
+    "用户未登录" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "User not logged in"
+          }
+        }
+      }
+    },
+    "确定" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
           }
         }
       }
@@ -422,6 +829,28 @@
         }
       }
     },
+    "纬度" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Latitude"
+          }
+        }
+      }
+    },
+    "经度" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Longitude"
+          }
+        }
+      }
+    },
     "继续" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -440,6 +869,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Edit Profile"
+          }
+        }
+      }
+    },
+    "药房" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pharmacy"
           }
         }
       }
@@ -499,6 +939,17 @@
         }
       }
     },
+    "请在设置中允许访问位置，以便在末日世界中探索" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please allow location access in settings to explore the apocalyptic world"
+          }
+        }
+      }
+    },
     "请设置新密码" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -532,6 +983,17 @@
         }
       }
     },
+    "警察局" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Police Station"
+          }
+        }
+      }
+    },
     "账户操作" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -550,6 +1012,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resources"
+          }
+        }
+      }
+    },
+    "超市" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supermarket"
+          }
+        }
+      }
+    },
+    "距离" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Distance"
           }
         }
       }
@@ -719,6 +1203,31 @@
         }
       }
     },
+    "错误" : {
+
+    },
+    "附近" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nearby"
+          }
+        }
+      }
+    },
+    "需要位置权限" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location Permission Required"
+          }
+        }
+      }
+    },
     "领地" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -726,6 +1235,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Territory"
+          }
+        }
+      }
+    },
+    "餐厅" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurant"
           }
         }
       }

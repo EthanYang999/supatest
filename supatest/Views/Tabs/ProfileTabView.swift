@@ -336,6 +336,18 @@ struct ProfileTabView: View {
                 settingsRowButton(icon: "info.circle", title: "关于") {
                     // TODO: 跳转关于页面
                 }
+
+                // DEBUG 模式下显示调试选项
+                #if DEBUG
+                Divider()
+                    .background(ApocalypseTheme.separator)
+
+                NavigationLink {
+                    DebugPOIView()
+                } label: {
+                    settingsRowLabel(icon: "ladybug", title: "POI 调试")
+                }
+                #endif
             }
             .background(ApocalypseTheme.cardBackground)
             .cornerRadius(12)
