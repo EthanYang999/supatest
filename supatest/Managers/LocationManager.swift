@@ -170,6 +170,7 @@ final class LocationManager: NSObject, ObservableObject {
     }
 
     /// 停止路径追踪
+    /// 会重置所有追踪相关状态，包括验证状态
     func stopPathTracking() {
         // Day 16B: 记录日志
         TerritoryLogger.shared.log("停止追踪，共 \(pathCoordinates.count) 个点", type: .info)
@@ -177,13 +178,28 @@ final class LocationManager: NSObject, ObservableObject {
         isTracking = false
         pathUpdateTimer?.invalidate()
         pathUpdateTimer = nil
+
+        // Day 18: 重置验证状态
+        territoryValidationPassed = false
+        territoryValidationError = nil
+        calculatedArea = 0
+
+        // 清空路径
+        pathCoordinates = []
+        pathUpdateVersion += 1
+        isPathClosed = false
     }
 
-    /// 清空路径
+    /// 清空路径（不停止追踪）
     func clearPath() {
         pathCoordinates = []
         pathUpdateVersion += 1
         isPathClosed = false
+
+        // Day 18: 重置验证状态
+        territoryValidationPassed = false
+        territoryValidationError = nil
+        calculatedArea = 0
     }
 
     /// 记录路径点（定时器回调）
