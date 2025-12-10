@@ -8,6 +8,7 @@
 
 import SwiftUI
 import CoreLocation
+import Supabase
 
 // MARK: - MapTabView
 
@@ -17,6 +18,9 @@ struct MapTabView: View {
 
     /// 定位管理器
     @StateObject private var locationManager = LocationManager()
+
+    /// 领地管理器 (Day 18-B3)
+    @StateObject private var territoryManager = TerritoryManager.shared
 
     /// 是否已定位到用户位置
     @State private var hasLocatedUser = false
@@ -33,6 +37,9 @@ struct MapTabView: View {
     /// 是否显示上传结果
     @State private var showUploadResult = false
 
+    /// 当前用户 ID (Day 18-B3)
+    @State private var currentUserId: String?
+
     // MARK: - Body
 
     var body: some View {
@@ -44,7 +51,9 @@ struct MapTabView: View {
                 trackingPath: $locationManager.pathCoordinates,
                 pathUpdateVersion: locationManager.pathUpdateVersion,
                 isTracking: locationManager.isTracking,
-                isPathClosed: locationManager.isPathClosed
+                isPathClosed: locationManager.isPathClosed,
+                territories: territoryManager.territories,
+                currentUserId: currentUserId
             )
             .ignoresSafeArea()
 
@@ -109,6 +118,11 @@ struct MapTabView: View {
         .onAppear {
             // 视图出现时请求定位权限
             locationManager.requestPermission()
+
+            // Day 18-B3: 加载领地和用户 ID
+            Task {
+                await loadTerritoriesAndUserId()
+            }
         }
     }
 
@@ -393,6 +407,9 @@ struct MapTabView: View {
             locationManager.stopPathTracking()
             trackingStartTime = nil
 
+            // Day 18-B3: 刷新领地列表
+            _ = try? await territoryManager.loadAllTerritories()
+
         } catch {
             showUploadMessage("上传失败: \(error.localizedDescription)", isSuccess: false)
         }
@@ -410,6 +427,17 @@ struct MapTabView: View {
             showUploadResult = false
             uploadMessage = nil
         }
+    }
+
+    /// Day 18-B3: 加载领地和用户 ID
+    private func loadTerritoriesAndUserId() async {
+        // 获取当前用户 ID
+        if let userId = try? await supabase.auth.session.user.id {
+            currentUserId = userId.uuidString
+        }
+
+        // 加载所有领地
+        _ = try? await territoryManager.loadAllTerritories()
     }
 }
 
