@@ -51,9 +51,6 @@
         }
       }
     },
-    "上传中..." : {
-
-    },
     "与其他幸存者联系" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -378,9 +375,6 @@
           }
         }
       }
-    },
-    "测试上传" : {
-
     },
     "测试中..." : {
       "extractionState" : "manual",
