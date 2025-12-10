@@ -214,9 +214,11 @@ final class TerritoryManager: ObservableObject {
                 .select()
                 .eq("user_id", value: userId.uuidString)
                 .eq("is_active", value: true)
+                .order("created_at", ascending: false)
                 .execute()
                 .value
 
+            territories = response
             TerritoryLogger.shared.log("拉取成功: \(response.count)个我的领地", type: .success)
             print("✅ 拉取我的领地成功: \(response.count)个")
 
@@ -228,6 +230,35 @@ final class TerritoryManager: ObservableObject {
             TerritoryLogger.shared.log(errorMsg, type: .error)
             print("❌ \(errorMsg)")
             throw error
+        }
+    }
+
+    // MARK: - Day 18-B3b: 删除领地
+
+    /// 删除领地
+    func deleteTerritory(territoryId: String) async -> Bool {
+        TerritoryLogger.shared.log("开始删除领地: \(territoryId)", type: .info)
+
+        do {
+            try await supabase
+                .from("territories")
+                .delete()
+                .eq("id", value: territoryId)
+                .execute()
+
+            // 从本地列表移除
+            territories.removeAll { $0.id == territoryId }
+
+            TerritoryLogger.shared.log("领地删除成功", type: .success)
+            print("✅ 领地删除成功")
+            return true
+
+        } catch {
+            let errorMsg = "删除领地失败: \(error.localizedDescription)"
+            errorMessage = errorMsg
+            TerritoryLogger.shared.log(errorMsg, type: .error)
+            print("❌ \(errorMsg)")
+            return false
         }
     }
 

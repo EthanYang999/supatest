@@ -24,6 +24,9 @@ struct Territory: Codable, Identifiable {
     let area: Double
     let pointCount: Int?           // 可选，防止解码失败
     let isActive: Bool?            // 可选，防止解码失败
+    let completedAt: String?       // Day 18-B3b: 圈地完成时间
+    let startedAt: String?         // Day 18-B3b: 圈地开始时间
+    let createdAt: String?         // Day 18-B3b: 记录创建时间
 
     // MARK: - Coding Keys
 
@@ -35,6 +38,9 @@ struct Territory: Codable, Identifiable {
         case area
         case pointCount = "point_count"
         case isActive = "is_active"
+        case completedAt = "completed_at"
+        case startedAt = "started_at"
+        case createdAt = "created_at"
     }
 
     // MARK: - Methods
@@ -45,5 +51,21 @@ struct Territory: Codable, Identifiable {
             guard let lat = point["lat"], let lon = point["lon"] else { return nil }
             return CLLocationCoordinate2D(latitude: lat, longitude: lon)
         }
+    }
+
+    // MARK: - Day 18-B3b: 辅助属性
+
+    /// 格式化面积显示
+    var formattedArea: String {
+        if area >= 1_000_000 {
+            return String(format: "%.2f km²", area / 1_000_000)
+        } else {
+            return String(format: "%.0f m²", area)
+        }
+    }
+
+    /// 显示名称（如果没有名称则显示默认）
+    var displayName: String {
+        return name ?? "未命名领地"
     }
 }
