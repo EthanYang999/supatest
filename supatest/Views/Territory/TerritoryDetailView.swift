@@ -118,7 +118,7 @@ struct TerritoryDetailView: View {
 
             VStack(spacing: 8) {
                 infoRow(icon: "map", title: "面积", value: territory.formattedArea)
-                infoRow(icon: "mappin.circle", title: "路径点", value: "\(territory.pointCount ?? 0) 个")
+                infoRow(icon: "mappin.circle", title: "路径点", value: String(localized: "\(territory.pointCount ?? 0) 个"))
 
                 if let createdAt = territory.createdAt {
                     infoRow(icon: "clock", title: "创建时间", value: formatDate(createdAt))
@@ -175,7 +175,7 @@ struct TerritoryDetailView: View {
     }
 
     /// 占位按钮
-    private func placeholderButton(icon: String, title: String) -> some View {
+    private func placeholderButton(icon: String, title: LocalizedStringKey) -> some View {
         HStack {
             Image(systemName: icon)
                 .foregroundColor(ApocalypseTheme.secondaryText)
@@ -196,7 +196,7 @@ struct TerritoryDetailView: View {
     }
 
     /// 信息行
-    private func infoRow(icon: String, title: String, value: String) -> some View {
+    private func infoRow(icon: String, title: LocalizedStringKey, value: String) -> some View {
         HStack {
             Image(systemName: icon)
                 .foregroundColor(ApocalypseTheme.primary)
