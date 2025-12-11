@@ -48,7 +48,7 @@ struct ContentView: View {
                 .tag(4)
 
             NavigationStack {
-                SupabaseTestView()
+                TestMenuView()
             }
             .tabItem {
                 Image(systemName: "bolt.fill")

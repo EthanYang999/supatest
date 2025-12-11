@@ -1,6 +1,12 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+    "%lld" : {
+
+    },
+    "%lld 点" : {
+
+    },
     "%lld秒后可重新发送" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -48,6 +54,9 @@
         }
       }
     },
+    "上传中..." : {
+
+    },
     "与其他幸存者联系" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -81,6 +90,9 @@
         }
       }
     },
+    "停止圈地" : {
+
+    },
     "关于" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -91,6 +103,9 @@
           }
         }
       }
+    },
+    "关闭" : {
+
     },
     "最终确认" : {
       "extractionState" : "manual",
@@ -103,6 +118,9 @@
         }
       }
     },
+    "删除" : {
+
+    },
     "删除中..." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -113,6 +131,9 @@
           }
         }
       }
+    },
+    "删除后无法恢复，确定要删除这块领地吗？" : {
+
     },
     "删除账户" : {
       "extractionState" : "manual",
@@ -125,6 +146,18 @@
         }
       }
     },
+    "删除领地" : {
+
+    },
+    "前往设置" : {
+
+    },
+    "加载中..." : {
+
+    },
+    "去地图页面开始圈地吧！" : {
+
+    },
     "取消" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -135,6 +168,12 @@
           }
         }
       }
+    },
+    "圈地功能测试" : {
+
+    },
+    "圈地测试" : {
+
     },
     "在废土中行走，成为新的主宰" : {
       "extractionState" : "manual",
@@ -180,6 +219,12 @@
         }
       }
     },
+    "导出" : {
+
+    },
+    "已闭环" : {
+
+    },
     "帮助与反馈" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -202,6 +247,15 @@
         }
       }
     },
+    "开发测试" : {
+
+    },
+    "开发说明" : {
+
+    },
+    "开始圈地" : {
+
+    },
     "忘记密码？" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -212,6 +266,12 @@
           }
         }
       }
+    },
+    "总面积" : {
+
+    },
+    "我的领地" : {
+
     },
     "或者使用以下方式登录" : {
       "extractionState" : "manual",
@@ -257,6 +317,18 @@
         }
       }
     },
+    "敬请期待" : {
+
+    },
+    "无法获取位置" : {
+
+    },
+    "暂无日志，开始圈地追踪后将显示日志" : {
+
+    },
+    "更多功能" : {
+
+    },
     "更改语言后，应用界面将立即切换到所选语言。" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -267,6 +339,12 @@
           }
         }
       }
+    },
+    "未追踪" : {
+
+    },
+    "查看圈地模块运行日志" : {
+
     },
     "正在删除账户..." : {
       "extractionState" : "manual",
@@ -345,6 +423,12 @@
         }
       }
     },
+    "测试功能" : {
+
+    },
+    "测试数据库连接状态" : {
+
+    },
     "测试连接" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -355,6 +439,9 @@
           }
         }
       }
+    },
+    "清空" : {
+
     },
     "点击按钮开始测试连接..." : {
       "extractionState" : "manual",
@@ -377,6 +464,12 @@
           }
         }
       }
+    },
+    "确认删除" : {
+
+    },
+    "确认登记" : {
+
     },
     "确认退出" : {
       "extractionState" : "manual",
@@ -499,6 +592,9 @@
         }
       }
     },
+    "请在系统设置中开启定位权限\n以便在末日世界中导航" : {
+
+    },
     "请设置新密码" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -587,6 +683,12 @@
         }
       }
     },
+    "还没有领地" : {
+
+    },
+    "这些测试功能仅供开发调试使用，正式版本将会隐藏。" : {
+
+    },
     "连接失败" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -608,6 +710,9 @@
           }
         }
       }
+    },
+    "追踪中" : {
+
     },
     "退出中..." : {
       "extractionState" : "manual",
@@ -719,6 +824,9 @@
         }
       }
     },
+    "面积: %lldm²" : {
+
+    },
     "领地" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -730,6 +838,15 @@
         }
       }
     },
+    "领地信息" : {
+
+    },
+    "领地数" : {
+
+    },
+    "验证失败" : {
+
+    },
     "验证码已发送至" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -740,6 +857,9 @@
           }
         }
       }
+    },
+    "验证通过" : {
+
     }
   },
   "version" : "1.1"

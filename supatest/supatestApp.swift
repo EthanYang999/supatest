@@ -15,6 +15,9 @@ struct supatestApp: App {
     /// 语言管理器
     @StateObject private var localizationManager = LocalizationManager.shared
 
+    /// 定位管理器 (Day 16B)
+    @StateObject private var locationManager = LocationManager()
+
     init() {
         configureAppearance()
     }
@@ -24,6 +27,7 @@ struct supatestApp: App {
             RootView()
                 .environmentObject(authManager)
                 .environmentObject(localizationManager)
+                .environmentObject(locationManager)
                 // 使用 refreshID 强制刷新整个 UI 树
                 .id(localizationManager.refreshID)
         }
